@@ -18,14 +18,12 @@ _base16()
 {
   local script=$1
   local theme=$2
-  local bg_data=$(echo $theme | awk 'match($0, /(light|dark)/) {print substr($0, RSTART, RLENGTH)}')
-
-  local vim_bg=${$bg_data:-dark}
+  export VIM_BG=$(echo $theme | awk 'match($0, /(light|dark)/) {print substr($0, RSTART, RLENGTH)}')
 
   [ -f $script ] && . $script
   ln -fs $script ~/.base16_theme
   export BASE16_THEME=${theme}
-  echo -e "if \0041exists('g:colors_name') ||\n set bg=$vim_bg\n g:colors_name != 'base16-$theme'\n  colorscheme base16-$theme\nendif" >| ~/.vimrc_background
+  echo -e "if \0041exists('g:colors_name') || g:colors_name != 'base16-$theme'\n  colorscheme base16-$theme\n  set bg=$VIM_BG\nendif" >| ~/.vimrc_background
 }
 FUNC
 for script in $script_dir/scripts/base16*.sh; do
