@@ -18,7 +18,9 @@ _base16()
 {
   local script=$1
   local theme=$2
-  local vim_bg=$3
+  local bg_data=$(echo $theme | awk 'match($0, /(light|dark)/) {print substr($0, RSTART, RLENGTH)}')
+
+  local vim_bg=${$bg_data:-dark}
 
   [ -f $script ] && . $script
   ln -fs $script ~/.base16_theme
@@ -32,10 +34,6 @@ for script in $script_dir/scripts/base16*.sh; do
 
   theme=${script_name#*-}
 
-  
-  vim_bg=$(echo $theme | awk 'match($0, /(light|dark)/) {print substr($0, RSTART, RLENGTH)}')
-  echo "vim_bg: $vim_bg"
-
   func_name="base16_${theme}"
-  echo "alias $func_name=\"_base16 \\\"$script\\\" $theme \\\" $vim_bg\""
+  echo "alias $func_name=\"_base16 \\\"$script\\\" $theme\""
 done;
